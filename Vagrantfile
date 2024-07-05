@@ -11,15 +11,19 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", privileged: true, inline: <<-SHELL
-    pacman -Syu --noconfirm fish wireshark-cli xorg-xauth docker ttf-dejavu xterm unzip
+    pacman -Syu --noconfirm fish docker wireshark-cli xorg-xauth ttf-dejavu xterm unzip bash-completion
     chsh -s /bin/fish vagrant
     usermod -aG docker vagrant
+
     # for yay
     pacman -Syu --noconfirm --needed base-devel git
-    # for x11 forwarding
+
+    # x11 forwarding
     echo "X11Forwarding yes" >> /etc/ssh/sshd_config
     systemctl restart sshd
-    systemctl start docker
+
+    # docker
+    systemctl start docker.service
     chmod 666 /var/run/docker.sock
   SHELL
 
@@ -28,7 +32,7 @@ Vagrant.configure("2") do |config|
     git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
 
     # install gns3
-    yay -S --noconfirm qemu docker vpcs dynamips libvirt ubridge inetutils
+    yay -S --noconfirm qemu vpcs dynamips libvirt ubridge inetutils
     yay -S --noconfirm gns3-server gns3-gui
 
     # run gns3server (exposed on host at http://localhost:3080)
@@ -45,5 +49,9 @@ Vagrant.configure("2") do |config|
     curl  -X 'POST' 'http://localhost:3080/v2/templates' \
           -H 'accept: application/json' -H 'Content-Type: application/json' \
           -d "@/vagrant/p1/router_tsiguenz.json"
+
+    # import projects
+    curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p1" \
+          --data-binary '@/vagrant/p1/p1.gns3project'
   SHELL
 end
