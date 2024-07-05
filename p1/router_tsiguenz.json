@@ -1,0 +1,23 @@
+{
+	"adapters": 3,
+	"builtin": false,
+	"category": "router",
+	"compute_id": "local",
+	"console_auto_start": false,
+	"console_http_path": "/",
+	"console_http_port": 80,
+	"console_resolution": "1024x768",
+	"console_type": "telnet",
+	"custom_adapters": [],
+	"default_name_format": "{name}-{0}",
+	"environment": "",
+	"extra_hosts": "",
+	"extra_volumes": [],
+	"image": "router:tsiguenz",
+	"name": "router_tsiguenz",
+	"start_command": "",
+	"symbol": ":/symbols/classic/route_switch_processor.svg",
+	"template_id": "512179db-6d58-4188-86ce-5ad4e1cc8138",
+	"template_type": "docker",
+	"usage": ""
+}
