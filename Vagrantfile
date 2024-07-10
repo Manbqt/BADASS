@@ -14,6 +14,7 @@ Vagrant.configure("2") do |config|
     pacman -Syu --noconfirm fish docker wireshark-cli xorg-xauth ttf-dejavu xterm unzip bash-completion
     chsh -s /bin/fish vagrant
     usermod -aG docker vagrant
+    usermod -aG wireshark vagrant
 
     # for yay
     pacman -Syu --noconfirm --needed base-devel git
