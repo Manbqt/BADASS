@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
     # install yay
-    git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
+    git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si --noconfirm
 
     # install gns3
     yay -S --noconfirm qemu vpcs dynamips libvirt ubridge inetutils
