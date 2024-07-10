@@ -15,6 +15,7 @@ Vagrant.configure("2") do |config|
     chsh -s /bin/fish vagrant
     usermod -aG docker vagrant
     usermod -aG wireshark vagrant
+    sudo systemctl enable docker.service
 
     # for yay
     pacman -Syu --noconfirm --needed base-devel git
@@ -23,10 +24,13 @@ Vagrant.configure("2") do |config|
     echo "X11Forwarding yes" >> /etc/ssh/sshd_config
     systemctl restart sshd
 
-    # docker
-    systemctl start docker.service
-    chmod 666 /var/run/docker.sock
   SHELL
+
+  config.vm.provision :shell do |shell|
+    shell.privileged = true
+    shell.inline = 'echo Rebooting for docker...'
+    shell.reboot = true
+  end
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
     # install yay
