@@ -61,8 +61,7 @@ Vagrant.configure("2") do |config|
     unzip -d /tmp/p1 /vagrant/p1/p1.gns3project
     find /tmp/p1 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
     # how the fuck it's the only solution ?
-    cd /tmp/p1/; zip -r /home/vagrant/p1.gns3project *; cd -
-    echo "pwd = $PWD"
+    cd /tmp/p1/; zip -r /home/vagrant/p1.gns3project *
     curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p1" \
           --data-binary '@/home/vagrant/p1.gns3project'
   SHELL
