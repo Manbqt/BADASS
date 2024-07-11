@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", privileged: true, inline: <<-SHELL
-    pacman -Syu --noconfirm fish docker wireshark-cli xorg-xauth ttf-dejavu xterm unzip bash-completion
+    pacman -Syu --noconfirm fish docker wireshark-cli xorg-xauth ttf-dejavu xterm unzip bash-completion zip
     chsh -s /bin/fish vagrant
     usermod -aG docker vagrant
     usermod -aG wireshark vagrant
@@ -58,6 +58,9 @@ Vagrant.configure("2") do |config|
             -d "@-"
 
     # import projects
+    unzip -d /tmp/p1 /vagrant/p1/p1.gns3project
+    find /tmp/p1 -type f -exec sed -i -e "s/user/$HOST_USER/" {} \;
+    zip /vagrant/p1/p1.gns3project /tmp/p1
     curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p1" \
           --data-binary '@/vagrant/p1/p1.gns3project'
   SHELL
