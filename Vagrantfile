@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
     shell.reboot = true
   end
 
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+  config.vm.provision "shell", privileged: false, env: {"HOST_USER" => ENV['USER']}, inline: <<-SHELL
     # install yay
     git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si --noconfirm
 
@@ -44,16 +44,18 @@ Vagrant.configure("2") do |config|
     gns3server --daemon --log /tmp/gns3.log
 
     # build docker images
-    docker build -t host:tsiguenz -f /vagrant/p1/Dockerfile.host .
-    docker build -t router:tsiguenz -f /vagrant/p1/Dockerfile.router .
+    docker build -t "host:$HOST_USER" -f /vagrant/p1/Dockerfile.host .
+    docker build -t "router:$HOST_USER" -f /vagrant/p1/Dockerfile.router .
 
     # import templates
-    curl  -X 'POST' 'http://localhost:3080/v2/templates' \
-          -H 'accept: application/json' -H 'Content-Type: application/json' \
-          -d "@/vagrant/p1/host_tsiguenz.json"
-    curl  -X 'POST' 'http://localhost:3080/v2/templates' \
-          -H 'accept: application/json' -H 'Content-Type: application/json' \
-          -d "@/vagrant/p1/router_tsiguenz.json"
+    sed "s/user/$HOST_USER/" /vagrant/p1/router_user.json | \
+      curl  -X 'POST' 'http://localhost:3080/v2/templates' \
+            -H 'accept: application/json' -H 'Content-Type: application/json' \
+            -d "@-"
+    sed "s/user/$HOST_USER/" /vagrant/p1/host_user.json | \
+      curl  -X 'POST' 'http://localhost:3080/v2/templates' \
+            -H 'accept: application/json' -H 'Content-Type: application/json' \
+            -d "@-"
 
     # import projects
     curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p1" \

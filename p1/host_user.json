@@ -1,7 +1,7 @@
 {
-	"adapters": 3,
+	"adapters": 1,
 	"builtin": false,
-	"category": "router",
+	"category": "guest",
 	"compute_id": "local",
 	"console_auto_start": false,
 	"console_http_path": "/",
@@ -13,11 +13,11 @@
 	"environment": "",
 	"extra_hosts": "",
 	"extra_volumes": [],
-	"image": "router:tsiguenz",
-	"name": "router_tsiguenz",
-	"start_command": "",
-	"symbol": ":/symbols/classic/route_switch_processor.svg",
-	"template_id": "512179db-6d58-4188-86ce-5ad4e1cc8138",
+	"image": "host:user",
+	"name": "host_user",
+	"start_command": "sh",
+	"symbol": ":/symbols/docker_guest.svg",
+	"template_id": "53cbecfe-35e7-4429-8015-08c070b28abb",
 	"template_type": "docker",
 	"usage": ""
 }
