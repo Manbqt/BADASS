@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", privileged: true, inline: <<-SHELL
-    pacman -Syu --noconfirm fish docker wireshark-cli xorg-xauth ttf-dejavu xterm unzip bash-completion zip
+    pacman -Syu --noconfirm fish docker wireshark-qt xorg-xauth ttf-dejavu xterm unzip bash-completion zip vim terminator
     chsh -s /bin/fish vagrant
     usermod -aG docker vagrant
     usermod -aG wireshark vagrant
@@ -40,13 +40,16 @@ Vagrant.configure("2") do |config|
     yay -S --noconfirm qemu vpcs dynamips libvirt ubridge inetutils
     yay -S --noconfirm gns3-server gns3-gui
 
+    # use terminator to connect in dockers
+    sed -i "s/xterm -T/terminator --new-tab --title/g" /home/vagrant/.config/GNS3/2.2/gns3_gui.conf
+
     # run gns3server (exposed on host at http://localhost:3080)
     gns3server --daemon --log /tmp/gns3.log
 
     # build docker images
     docker build -t "host:$HOST_USER" -f /vagrant/p1/Dockerfile.host .
     docker build -t "router:$HOST_USER" -f /vagrant/p1/Dockerfile.router .
-
+    
     # import templates
     sed "s/user/$HOST_USER/g" /vagrant/p1/router_user.json | \
       curl  -X 'POST' 'http://localhost:3080/v2/templates' \
