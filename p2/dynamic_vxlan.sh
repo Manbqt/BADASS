@@ -32,11 +32,10 @@ host_reset() {
 router_config() {
 	local container=$1
 	local local_addr=$2
-	local remote_addr=$3
 
 	cmd="
 		ip address add $local_addr dev eth0
-		ip link add name vxlan10 type vxlan id 10 remote $remote_addr dstport 4789 dev eth0
+		ip link add name vxlan10 type vxlan id 10 group 239.1.1.1 dstport 4789 dev eth0
 		brctl addbr br0
 		ip link set br0 up
 		ip link set vxlan10 up
@@ -69,11 +68,11 @@ main() {
 		case "$container_hostname" in
 		"$router1")
 			router_reset "$container_id"
-			router_config "$container_id" "10.1.1.1/24" "10.1.1.2"
+			router_config "$container_id" "10.1.1.1/24"
 			;;
 		"$router2")
 			router_reset "$container_id"
-			router_config "$container_id" "10.1.1.2/24" "10.1.1.1"
+			router_config "$container_id" "10.1.1.2/24"
 			;;
 		"$host1")
 			host_reset "$container_id"

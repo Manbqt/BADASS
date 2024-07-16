@@ -33,6 +33,9 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", privileged: false, env: {"HOST_USER" => ENV['USER']}, inline: <<-SHELL
+    # Set USER_HOST to global
+    fish -c "set -Ux HOST_USER $HOST_USER"
+
     # install yay
     git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si --noconfirm
 
@@ -61,13 +64,24 @@ Vagrant.configure("2") do |config|
             -d "@-"
 
     # import projects
+    # p1
     unzip -d /tmp/p1 /vagrant/p1/p1.gns3project
     find /tmp/p1 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
     cd /tmp/p1/; zip -r /home/vagrant/p1.gns3project *
     curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p1" \
           --data-binary '@/home/vagrant/p1.gns3project'
 
-    # Set USER_HOST to global
-    fish -c "set -Ux HOST_USER $HOST_USER"
+    # p2
+    unzip -d /tmp/p2 /vagrant/p2/p2.gns3project
+    find /tmp/p2 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
+    cd /tmp/p2/; zip -r /home/vagrant/p2.gns3project *
+    curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p2" \
+          --data-binary '@/home/vagrant/p2.gns3project'
+    # p3
+    # unzip -d /tmp/p3 /vagrant/p3/p3.gns3project
+    # find /tmp/p3 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
+    # cd /tmp/p3/; zip -r /home/vagrant/p3.gns3project *
+    # curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p3" \
+    #       --data-binary '@/home/vagrant/p3.gns3project'
   SHELL
 end
