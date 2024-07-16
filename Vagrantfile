@@ -49,7 +49,7 @@ Vagrant.configure("2") do |config|
     # build docker images
     docker build -t "host:$HOST_USER" -f /vagrant/p1/Dockerfile.host .
     docker build -t "router:$HOST_USER" -f /vagrant/p1/Dockerfile.router .
-    
+
     # import templates
     sed "s/user/$HOST_USER/g" /vagrant/p1/router_user.json | \
       curl  -X 'POST' 'http://localhost:3080/v2/templates' \
@@ -66,5 +66,8 @@ Vagrant.configure("2") do |config|
     cd /tmp/p1/; zip -r /home/vagrant/p1.gns3project *
     curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p1" \
           --data-binary '@/home/vagrant/p1.gns3project'
+
+    # Set USER_HOST to global
+    fish -c "set -Ux HOST_USER $HOST_USER"
   SHELL
 end
