@@ -43,8 +43,8 @@ Vagrant.configure("2") do |config|
     yay -S --noconfirm qemu vpcs dynamips libvirt ubridge inetutils
     yay -S --noconfirm gns3-server gns3-gui
 
-    # use terminator to connect in dockers
-    sed -i "s/xterm -T/terminator --new-tab --title/g" /home/vagrant/.config/GNS3/2.2/gns3_gui.conf
+    # import config for gns3 gui
+    cp /vagrant/config/gns3_gui.conf /home/vagrant/.config/GNS3/2.2/
 
     # run gns3server (exposed on host at http://localhost:3080)
     gns3server --daemon --log /tmp/gns3.log
