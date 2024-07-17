@@ -78,10 +78,10 @@ Vagrant.configure("2") do |config|
     curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p2" \
           --data-binary '@/home/vagrant/p2.gns3project'
     # p3
-    # unzip -d /tmp/p3 /vagrant/p3/p3.gns3project
-    # find /tmp/p3 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
-    # cd /tmp/p3/; zip -r /home/vagrant/p3.gns3project *
-    # curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p3" \
-    #       --data-binary '@/home/vagrant/p3.gns3project'
+    unzip -d /tmp/p3 /vagrant/p3/p3.gns3project
+    find /tmp/p3 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
+    cd /tmp/p3/; zip -r /home/vagrant/p3.gns3project *
+    curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p3" \
+          --data-binary '@/home/vagrant/p3.gns3project'
   SHELL
 end
