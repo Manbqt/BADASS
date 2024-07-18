@@ -44,6 +44,7 @@ Vagrant.configure("2") do |config|
     yay -S --noconfirm gns3-server gns3-gui
 
     # import config for gns3 gui
+    mkdir -p /home/vagrant/.config/GNS3/2.2/
     cp /vagrant/config/gns3_gui.conf /home/vagrant/.config/GNS3/2.2/
 
     # run gns3server (exposed on host at http://localhost:3080)
