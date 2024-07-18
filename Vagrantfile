@@ -48,7 +48,7 @@ Vagrant.configure("2") do |config|
     cp /vagrant/config/gns3_gui.conf /home/vagrant/.config/GNS3/2.2/
 
     # run gns3server (exposed on host at http://localhost:3080)
-    gns3server --daemon --log /tmp/gns3.log
+    gns3server --log /tmp/gns3.log &
 
     # build docker images
     docker build -t "host:$HOST_USER" -f /vagrant/p1/Dockerfile.host .
