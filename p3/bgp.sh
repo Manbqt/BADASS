@@ -156,15 +156,15 @@ main() {
 			;;
 		"$host1")
 			host_reset "$container_id"
-			host_config "$container_id" "30.1.1.1/24"
+			host_config "$container_id" "20.1.1.1/24"
 			;;
 		"$host2")
 			host_reset "$container_id"
-			host_config "$container_id" "30.1.1.2/24"
+			host_config "$container_id" "20.1.1.2/24"
 			;;
 		"$host3")
 			host_reset "$container_id"
-			host_config "$container_id" "30.1.1.3/24"
+			host_config "$container_id" "20.1.1.3/24"
 			;;
 		*)
 			echo "No configuration for this container $container_hostname"
