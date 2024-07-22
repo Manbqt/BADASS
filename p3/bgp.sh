@@ -31,6 +31,17 @@ host_reset() {
 	echo "\"$container\": Reset Host Interface"
 	docker exec "$container" sh -c "$cmd"
 }
+rr_reset () {
+	local container=$1
+
+	cmd="
+        ip address flush dev eth0 2>/dev/null;
+        ip address flush dev eth1 2>/dev/null;
+        ip address flush dev eth2 2>/dev/null;
+	"
+	echo "\"$container\": Reset RR Interface"
+	docker exec "$container" sh -c "$cmd"
+}
 
 vxlan_config() {
 	local container=$1
@@ -58,10 +69,10 @@ vtep_bgp_config() {
 		-c "! Setup interfaces" \
 		-c "interface eth0" \
 		-c "	ip address $local_addr" \
-        -c "	ip ospf area 0" \
+		-c "	ip ospf area 0" \
 		-c "interface lo" \
 		-c "	ip address $lo_ip" \
-        -c "	ip ospf area 0" \
+		-c "	ip ospf area 0" \
 		-c "! Setup BGP for AS of id 1" \
 		-c "router bgp 1" \
 		-c "! Add RR router as neighbor" \
@@ -69,7 +80,8 @@ vtep_bgp_config() {
 		-c "	neighbor 1.1.1.4 update-source lo" \
 		-c "address-family l2vpn evpn" \
 		-c "	neighbor 1.1.1.4 activate" \
-		-c "exit-address-family"
+		-c "exit-address-family" \
+		-c "router ospf"
 }
 
 host_config() {
@@ -105,10 +117,10 @@ rr_config() {
 		-c "	neighbor ibgp remote-as 1" \
 		-c "	neighbor ibgp update-source lo" \
 		-c "	bgp listen range 1.1.1.0/29 peer-group ibgp" \
-		-c "address-family l2vpn evpn" \
-		-c "	neighbor ibgp activate" \
-		-c "	neighbor ibgp route-reflector-client" \
-		-c "exit-address-family" \
+		-c "	address-family l2vpn evpn" \
+		-c "		neighbor ibgp activate" \
+		-c "		neighbor ibgp route-reflector-client" \
+		-c "	exit-address-family" \
 		-c "! Setup ospf for area id of 0" \
 		-c "router ospf" \
 		-c "	network 0.0.0.0/0 area 0"
@@ -124,6 +136,7 @@ main() {
 		echo "$container_hostname"
 		case "$container_hostname" in
 		"$rr")
+			rr_reset "$container_id"
 			rr_config "$container_id" "1.1.1.4/32"
 			;;
 		"$vtep1")
