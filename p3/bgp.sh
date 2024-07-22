@@ -65,10 +65,10 @@ vtep_bgp_config() {
 		-c "! Setup BGP for AS of id 1" \
 		-c "router bgp 1" \
 		-c "! Add RR router as neighbor" \
-		-c "	neighbor 1.1.1.1 remote-as 1" \
-		-c "	neighbor 1.1.1.1 update-source lo" \
+		-c "	neighbor 1.1.1.4 remote-as 1" \
+		-c "	neighbor 1.1.1.4 update-source lo" \
 		-c "address-family l2vpn evpn" \
-		-c "	neighbor 1.1.1.1 activate" \
+		-c "	neighbor 1.1.1.4 activate" \
 		-c "exit-address-family"
 }
 
@@ -134,12 +134,12 @@ main() {
 		"$vtep2")
 			router_reset "$container_id"
 			vxlan_config "$container_id"
-			vtep_bgp_config "$container_id" "10.1.1.2/30" "1.1.1.2/32"
+			vtep_bgp_config "$container_id" "10.1.1.5/30" "1.1.1.2/32"
 			;;
 		"$vtep3")
 			router_reset "$container_id"
 			vxlan_config "$container_id"
-			vtep_bgp_config "$container_id" "10.1.1.3/30" "1.1.1.3/32"
+			vtep_bgp_config "$container_id" "10.1.1.9/30" "1.1.1.3/32"
 			;;
 		"$host1")
 			host_reset "$container_id"
