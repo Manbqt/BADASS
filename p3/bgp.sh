@@ -142,17 +142,17 @@ main() {
 		"$vtep1")
 			router_reset "$container_id"
 			vxlan_config "$container_id"
-			vtep_bgp_config "$container_id" "10.1.1.1/30" "1.1.1.1/32"
+			vtep_bgp_config "$container_id" "10.1.1.2/30" "1.1.1.1/32"
 			;;
 		"$vtep2")
 			router_reset "$container_id"
 			vxlan_config "$container_id"
-			vtep_bgp_config "$container_id" "10.1.1.5/30" "1.1.1.2/32"
+			vtep_bgp_config "$container_id" "10.1.1.6/30" "1.1.1.2/32"
 			;;
 		"$vtep3")
 			router_reset "$container_id"
 			vxlan_config "$container_id"
-			vtep_bgp_config "$container_id" "10.1.1.9/30" "1.1.1.3/32"
+			vtep_bgp_config "$container_id" "10.1.1.10/30" "1.1.1.3/32"
 			;;
 		"$host1")
 			host_reset "$container_id"
