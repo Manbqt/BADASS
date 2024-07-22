@@ -80,6 +80,7 @@ vtep_bgp_config() {
 		-c "	neighbor 1.1.1.4 update-source lo" \
 		-c "address-family l2vpn evpn" \
 		-c "	neighbor 1.1.1.4 activate" \
+		-c "	advertise-all-vni" \
 		-c "exit-address-family" \
 		-c "router ospf"
 }
