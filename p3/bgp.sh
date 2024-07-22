@@ -11,19 +11,14 @@ host3="host_${username}-3"
 
 # Colors
 RESET="\e[0m"
-BLACK="\e[0;30m"
 RED="\e[0;31m"
 GREEN="\e[0;32m"
 BLUE="\e[0;34m"
-YELLOW="\e[0;33m"
-PURPLE="\e[0;35m"
-CYAN="\e[0;36m"
-WHITE="\e[0;37m"
 
 router_reset() {
 	local container=$1
 
-	echo -e "Reset Router Interface"$RESET
+	echo -e "Reset Router Interface$RESET"
 
 	cmd="
 		ip addr flush dev eth0 2>/dev/null || true;
@@ -37,16 +32,16 @@ router_reset() {
 host_reset() {
 	local container=$1
 
-	echo -e "Reset Host Interface"$RESET
+	echo -e "Reset Host Interface$RESET"
 	cmd="
 		ip address flush dev eth0 2>/dev/null
 	"
 	docker exec "$container" sh -c "$cmd"
 }
-rr_reset () {
+rr_reset() {
 	local container=$1
 
-	echo -e "Reset RR Interface"$RESET
+	echo -e "Reset RR Interface$RESET"
 
 	cmd="
         ip address flush dev eth0 2>/dev/null;
@@ -59,7 +54,7 @@ rr_reset () {
 vxlan_config() {
 	local container=$1
 
-	echo -e "VXLAN configuration"$RESET
+	echo -e "VXLAN configuration$RESET"
 
 	cmd="
 		ip link add name vxlan10 type vxlan id 10 dstport 4789 dev eth0
@@ -77,7 +72,7 @@ vtep_bgp_config() {
 	local local_addr=$2
 	local lo_ip=$3
 
-	echo -e "VTEP Configuration BGP"$RESET
+	echo -e "VTEP Configuration BGP$RESET"
 
 	docker exec "$container" "vtysh" \
 		-c "config terminal" \
@@ -104,7 +99,7 @@ host_config() {
 	local container=$1
 	local ip_addr=$2
 
-	echo -e "Host configuration"$RESET
+	echo -e "Host configuration$RESET"
 
 	cmd="
 		ip addr add $ip_addr dev eth0
@@ -116,7 +111,7 @@ rr_config() {
 	local container=$1
 	local lo_ip=$2
 
-	echo -e "Reflector configuration"$RESET
+	echo -e "Reflector configuration$RESET"
 
 	docker exec "$container" "vtysh" \
 		-c "config terminal" \
@@ -149,41 +144,58 @@ main() {
 		container_hostname=$(docker exec -it "$container_id" hostname)
 		container_hostname=${container_hostname::-1}
 
-		prefix() { echo -en $BLUE"# "$GREEN"$container_hostname"$BLUE": "; }
+		prefix() { echo -en "$BLUE# $GREEN$container_hostname$BLUE: "; }
 		case "$container_hostname" in
 		"$rr")
-			prefix; rr_reset "$container_id"
-			prefix; rr_config "$container_id" "1.1.1.4/32"
+			prefix
+			rr_reset "$container_id"
+			prefix
+			rr_config "$container_id" "1.1.1.4/32"
 			;;
 		"$vtep1")
-			prefix; router_reset "$container_id"
-			prefix; vxlan_config "$container_id"
-			prefix; vtep_bgp_config "$container_id" "10.1.1.2/30" "1.1.1.1/32"
+			prefix
+			router_reset "$container_id"
+			prefix
+			vxlan_config "$container_id"
+			prefix
+			vtep_bgp_config "$container_id" "10.1.1.2/30" "1.1.1.1/32"
 			;;
 		"$vtep2")
-			prefix; router_reset "$container_id"
-			prefix; vxlan_config "$container_id"
-			prefix; vtep_bgp_config "$container_id" "10.1.1.6/30" "1.1.1.2/32"
+			prefix
+			router_reset "$container_id"
+			prefix
+			vxlan_config "$container_id"
+			prefix
+			vtep_bgp_config "$container_id" "10.1.1.6/30" "1.1.1.2/32"
 			;;
 		"$vtep3")
-			prefix; router_reset "$container_id"
-			prefix; vxlan_config "$container_id"
-			prefix; vtep_bgp_config "$container_id" "10.1.1.10/30" "1.1.1.3/32"
+			prefix
+			router_reset "$container_id"
+			prefix
+			vxlan_config "$container_id"
+			prefix
+			vtep_bgp_config "$container_id" "10.1.1.10/30" "1.1.1.3/32"
 			;;
 		"$host1")
-			prefix; host_reset "$container_id"
-			prefix; host_config "$container_id" "20.1.1.1/24"
+			prefix
+			host_reset "$container_id"
+			prefix
+			host_config "$container_id" "20.1.1.1/24"
 			;;
 		"$host2")
-			prefix; host_reset "$container_id"
-			prefix; host_config "$container_id" "20.1.1.2/24"
+			prefix
+			host_reset "$container_id"
+			prefix
+			host_config "$container_id" "20.1.1.2/24"
 			;;
 		"$host3")
-			prefix; host_reset "$container_id"
-			prefix; host_config "$container_id" "20.1.1.3/24"
+			prefix
+			host_reset "$container_id"
+			prefix
+			host_config "$container_id" "20.1.1.3/24"
 			;;
 		*)
-			echo -e $RED"# No configuration for this container $container_hostname"$RESET
+			echo -e "$RED# No configuration for this container $container_hostname$RESET"
 			;;
 		esac
 	done
