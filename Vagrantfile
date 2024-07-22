@@ -65,24 +65,18 @@ Vagrant.configure("2") do |config|
             -d "@-"
 
     # import projects
-    # p1
-    unzip -d /tmp/p1 /vagrant/p1/p1.gns3project
-    find /tmp/p1 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
-    cd /tmp/p1/; zip -r /home/vagrant/p1.gns3project *
-    curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p1" \
-          --data-binary '@/home/vagrant/p1.gns3project'
 
-    # p2
-    unzip -d /tmp/p2 /vagrant/p2/p2.gns3project
-    find /tmp/p2 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
-    cd /tmp/p2/; zip -r /home/vagrant/p2.gns3project *
-    curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p2" \
-          --data-binary '@/home/vagrant/p2.gns3project'
-    # p3
-    unzip -d /tmp/p3 /vagrant/p3/p3.gns3project
-    find /tmp/p3 -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
-    cd /tmp/p3/; zip -r /home/vagrant/p3.gns3project *
-    curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=p3" \
-          --data-binary '@/home/vagrant/p3.gns3project'
+    import() { 
+      local project_name="$1"
+      unzip -d "/tmp/${project_name}" "/vagrant/${project_name}/${project_name}.gns3project"
+      find "/tmp/${project_name}" -type f -exec sed -i -e "s/user/$HOST_USER/g" {} \\;
+      cd "/tmp/${project_name}/"; zip -r "/home/vagrant/${project_name}.gns3project" *
+      curl  -X POST "http://localhost:3080/v2/projects/$(uuidgen)/import?name=${project_name}" \
+            --data-binary "@/home/vagrant/${project_name}.gns3project"
+    }
+
+    import p1
+    import p2
+    import p3
   SHELL
 end
