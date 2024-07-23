@@ -57,7 +57,7 @@ vxlan_config() {
 	echo -e "VXLAN configuration$RESET"
 
 	cmd="
-		ip link add name vxlan10 type vxlan id 10 dstport 4789 dev eth0
+		ip link add name vxlan10 type vxlan id 10 dstport 4789
 		brctl addbr br0
 		ip link set br0 up
 		ip link set vxlan10 up
