@@ -10,9 +10,9 @@ router_reset() {
 	local container=$1
 
 	cmd="
-		ip addr flush dev eth0 2>/dev/null || true &&
-		ip link del vxlan10 2>/dev/null || true && 
-		ip link del br0 2>/dev/null || true
+		ip addr flush dev eth0 2>/dev/null;
+		ip link del vxlan10 2>/dev/null;
+		ip link del br0 2>/dev/null;
 	"
 	echo "\"$container\": docker exec is running"
 	docker exec "$container" sh -c "$cmd"
